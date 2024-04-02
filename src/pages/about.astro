@@ -1,4 +1,23 @@
 ---
+import '../styles/global.css'
+import Navigation from '../components/Navigation.astro'
+import Footer from '../components/Footer.astro'
+import BaseLayout from '../layouts/BaseLayout.astro'
+
+const pageTitle = "About me"
+
+const identity = {
+    firstName : "Dheeraj",
+    country : "India",
+    occupation : "Software Engineer",
+    hobbies : ["photography",'Playing Badminton',"Esports"],
+}
+
+const skills= ["HTML","CSS","Javascript","React","Astro","Next.js"];
+const happy = true;
+const finished = false;
+const goal = 3;
+const skillColor = 'navy'
 
 ---
 
@@ -8,19 +27,41 @@
 		<link rel="icon" type="image/svg+xml" href="/favicon.svg" />
 		<meta name="viewport" content="width=device-width" />
 		<meta name="generator" content={Astro.generator} />
-		<title>Astro</title>
+		<title>{pageTitle}</title>
+        <style define:vars={{skillColor}}>
+            h1 {
+              color: purple;
+              font-size: 4rem;
+            }
+            .skill{
+                color : var(--skillColor);
+                font-weight: bold;
+            }
+          </style>
+      
 	</head>
 	<body>
-        <nav>
-            <ul>
-                <li><a href="/">Home</a></li>
-                <li><a href="/about">About</a></li>
-                <li><a href="/blog">blog</a></li>
-            </ul>
-        </nav>
+       <BaseLayout pageTitle={pageTitle}>
 		<h1>About Page - Astro</h1>
+        <h1>{pageTitle}</h1>
         <h2>.. and my new Astro site!</h2>
         <p>I am working through astro docs. This is my second page</p>
         <p>This site will update as i complete more of the tut. </p>
+        <ul>
+            <li>My name is {identity.firstName}</li>
+            <li>I live in {identity.country} and i work as a {identity.occupation}</li>
+
+            {
+                identity.hobbies.length>2 && <li>Two of my hobbies are : {identity.hobbies[0]} and {identity.hobbies[1]} </li>
+            }
+        </ul>
+        <p>My skills are : </p>
+        <ul>
+            {skills.map((skill)=> <li class="skill">{skill}</li>)}
+        </ul>
+        {happy && <p>I am happy to learn astro.</p>}
+        {finished && <p>I finished this tutorial</p>}
+        {goal===3 ? <p>My goal is to finish 3 days</p> : <p>My goal is not 3 days.</p>}
+    </BaseLayout>
 	</body>
 </html>
