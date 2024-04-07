@@ -3,6 +3,22 @@ const pageTitle = "Home Page"
 import BaseLayout from '../layouts/BaseLayout.astro'
 import Greeting from '../components/Greeting';
 import '../styles/global.css'
+import {db,Comment} from "astro:db"
+import { Author } from 'astro:db';
+const comments = await db.select().from(Comment);
+const authors = await db.select().from(Author);
+console.log("Authors are ",authors);
+console.log(comments);
+
+if(Astro.request.method==='POST'){
+	const formData = await Astro.request.formData();
+	const author = formData.get('author');
+	const content = formData.get('content');
+	if(typeof author==='string' && typeof content==='string'){
+		await db.insert(Comment).values({author :author,body : content,likes :0,authorId : 2})
+	}
+}
+
 ---
 
 <html lang="en">
@@ -17,7 +33,29 @@ import '../styles/global.css'
 		<BaseLayout pageTitle={pageTitle}>
 			<h1>My astro site</h1>
 			<Greeting client:load messages={["Hej", "Hallo", "Hola", "Habari"]} />
-		</BaseLayout>
 
+			{comments.map((comment)=>{
+				return(
+					<div>
+						<p>Author : {comment.author}</p>
+						<p>{comment.body}</p>
+						<span>Likes : {comment.likes}</span>
+					</div>
+				)
+			})}
+
+			<h3>Add a comment</h3>
+
+			<form method="POST" style="display: grid;">
+				<label for="author">Author</label>
+				<input type="text" name="author" id="author">
+
+				<label for="content">Content</label>
+				<textarea name="content" id="content"></textarea>
+
+				<button type="submit">Submit</button>
+			</form>
+			
+		</BaseLayout>
 	</body>
 </html>
